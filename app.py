@@ -18,10 +18,10 @@ from Generator_Anthropic import Generator_Anthropic
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.memory import ConversationBufferMemory
 
-load_dotenv()
-openai_api_key = os.getenv('OPENAI_API_KEY')
+#load_dotenv()
+#openai_api_key = os.getenv('OPENAI_API_KEY')
 #print(api_key)
-
+openai_api_key = "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"
 def retrieve_pdf_text(pdf_file):
     text = ""
     try:

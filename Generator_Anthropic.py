@@ -14,8 +14,10 @@ import anthropic
 from langchain.llms import Anthropic
 from langchain.chat_models import ChatAnthropic
 
-load_dotenv()
-anthropic_api_key = os.getenv('ANTHROPIC_API_KEY')
+#load_dotenv()
+#anthropic_api_key = os.getenv('ANTHROPIC_API_KEY')
+anthropic_api_key="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"
+
 class Generator_Anthropic:
     def __init__(self):
         self.system_prompt = self.get_system_prompt()
