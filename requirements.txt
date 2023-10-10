@@ -1,0 +1,10 @@
+streamlit
+langchain
+openai
+python-dotenv
+PyPDF2
+anthropic
+openai
+pycryptodome
+gptcache
+tensorflow
