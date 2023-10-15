@@ -115,7 +115,7 @@ class Generator:
         return self.chain.run(
             language=language, context=context, question_input=question,
         )
-"""
+
 # Create a Streamlit app
 #st.set_page_config(layout="wide")
 st.title("Prompt Playground🥳")
@@ -199,4 +199,4 @@ if st.button("Clear History"):
         st.session_state.history = []
         # refresh streamlit
         st.experimental_rerun()
-"""
+
