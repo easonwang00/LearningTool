@@ -21,7 +21,7 @@ from langchain.memory import ConversationBufferMemory
 #load_dotenv()
 #openai_api_key = os.getenv('OPENAI_API_KEY')
 #print(api_key)
-openai_api_key = "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"
+openai_api_key = "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"
 def retrieve_pdf_text(pdf_file):
     text = ""
     try:
@@ -52,7 +52,7 @@ class Generator:
             model_name = "gpt-4",
             temperature=0, 
             openai_api_key = openai_api_key,
-            #streaming=True, 
+            streaming=True, 
             callbacks=[StreamingStdOutCallbackHandler()],
             #cache= True,
             #n = 2,
@@ -116,50 +116,54 @@ class Generator:
             language=language, context=context, question_input=question,
         )
 
+
 # Create a Streamlit app
 #st.set_page_config(layout="wide")
-st.title("Prompt Playground🥳")
-
-# Get the user's choice
-model_choice = st.selectbox("Choose a model", ["Small Model", "Large Model"])
-
-# Perform an action based on the user's choice
-if model_choice == "Small Model":
-    st.write("You chose OpenAI. Performing action with OpenAI model...")
-    st.session_state.Generator = Generator()
-elif model_choice == "Large Model":
-    st.write("You chose Anthropic. Performing action with Anthropic model...")
-    st.session_state.Generator = Generator_Anthropic()
-
+st.markdown("<h1 style='text-align: center; color: black;'>Smart Kid🥳</h1>", unsafe_allow_html=True)
 # Initialize the conversation history if it doesn't exist.
 if "history" not in st.session_state:
     st.session_state.history = []
 
 if "context" not in st.session_state:
     st.session_state.context = ""
-# create a upload file widget for a pdf
-pdf_files = st.file_uploader("Upload PDF files", type=["pdf"], accept_multiple_files=True)
+# Arrange model choice, language selection, and PDF uploader in columns
+col1, col2, col3 = st.columns(3)  # Create 3 columns
 
-# if pdf files are uploaded
-if pdf_files:
-    # retrieve the text from the pdfs
-    texts = [retrieve_pdf_text(pdf_file) for pdf_file in pdf_files]
-    
-    # concatenate texts from all PDFs
-    st.session_state.context = "\n\n".join(texts)
-else:
-    st.write("Please upload pdf files")
+# Model Choice in 1st column
+with col1:
+    model_choice = st.selectbox("😇", ["Small Model", "Large Model"], key="model_selectbox")
+    # Perform an action based on the user's choice
+    if model_choice == "Small Model":
+        st.write("Powered by OpenAI")
+        st.session_state.Generator = Generator()
+    elif model_choice == "Large Model":
+        st.write("Powered by Anthropic AI")
+        st.session_state.Generator = Generator_Anthropic()
+
+# Language Choice in 2nd column
+with col2:
+    language = st.selectbox("✍️", ["English", "中文"], key="language_selectbox")
+    if language != "English":
+        st.session_state.language = "中文"
+    else:
+        st.session_state.language = "english"
+
+# PDF Uploader in 3rd column
+with col3:
+    pdf_files = st.file_uploader("📚", type=["pdf"], accept_multiple_files=True)
+
+    # if pdf files are uploaded
+    if pdf_files:
+        # retrieve the text from the pdfs
+        texts = [retrieve_pdf_text(pdf_file) for pdf_file in pdf_files]
+        
+        # concatenate texts from all PDFs
+        st.session_state.context = "\n\n".join(texts)
+
 
 # create a button that clears the context
-if st.button("Clear context"):
-    st.session_state.context = ""
-
-# If there's context, proceed.
-language = st.selectbox("Language", ["English", "中文"])
-if language != "English":
-    st.session_state.language = "中文"
-else:
-    st.session_state.language = "english"
+#if st.button("Clear context"):
+#    st.session_state.context = ""
 
 # Colors to be used in alternating manner for Q/A pairs
 colors = ["#f0f8ff", "#faf0e6"]  # AliceBlue and OldLace color codes. You can choose your own.
@@ -173,12 +177,14 @@ for idx, interaction in enumerate(st.session_state.history):
     color = colors[idx % len(colors)]
     
     # Using HTML and CSS for styling within markdown
-    st.markdown(f"<div style='background-color: {color}; padding: 10px;'><b>Q{idx + 1}: {question}</b></div>", unsafe_allow_html=True)
-    st.markdown(f"<div style='background-color: {color}; padding: 10px;'><b>A{idx + 1}: {answer}</b></div>", unsafe_allow_html=True)
+    #st.markdown(f"<div style='background-color: {color}; padding: 10px;'><b>Q{idx + 1}: {question}</b></div>", unsafe_allow_html=True)
+    #st.markdown(f"<div style='background-color: {color}; padding: 10px;'><b>A{idx + 1}: {answer}</b></div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='background-color: {color}; padding: 10px;'><b>Question: {question}</b></div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='background-color: {color}; padding: 10px;'><b>🥳 {answer}</b></div>", unsafe_allow_html=True)
 
 
 # create a text input widget for a question
-question = st.text_input("Input the generation prompt")
+question = st.text_input("🌐")
 
 # create a button to run the model
 if st.button("Run"):
@@ -186,7 +192,7 @@ if st.button("Run"):
     generator_response = st.session_state.Generator.run_chain(
         language=st.session_state.language, context=st.session_state.context, question=question
     )
-
+    print("#generator_response: ", generator_response)
     # Add the question and answer to the history.
     st.session_state.history.append({"question": question, "answer": generator_response})
 
