@@ -192,6 +192,7 @@ if st.button("Run"):
     generator_response = st.session_state.Generator.run_chain(
         language=st.session_state.language, context=st.session_state.context, question=question
     )
+    generator_response = "。。。"
     print("#generator_response: ", generator_response)
     # Add the question and answer to the history.
     st.session_state.history.append({"question": question, "answer": generator_response})
